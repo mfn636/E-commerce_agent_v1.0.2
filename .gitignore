@@ -9,9 +9,8 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 
-# 个人文件（不公开）
-docs/resume.md
-docs/interview_qa.md
+# 文档（本地保留，不纳入版本管理）
+docs/
 
 # 编辑器 / 系统
 .idea/
