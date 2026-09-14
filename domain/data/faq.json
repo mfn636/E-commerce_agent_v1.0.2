@@ -1,0 +1,152 @@
+[
+  {
+    "category": "支付",
+    "question": "支持哪些付款方式？",
+    "answer": "我们支持支付宝、微信支付、银行卡（银联）以及部分地区的货到付款。"
+  },
+  {
+    "category": "支付",
+    "question": "可以分期付款吗？",
+    "answer": "支持，支付宝花呗和部分银行信用卡支持 3/6/12 期免息分期，具体以支付页面显示为准。"
+  },
+  {
+    "category": "发货",
+    "question": "下单后多久发货？",
+    "answer": "一般在 24 小时内发货，如遇大促活动可能延迟至 48 小时内。"
+  },
+  {
+    "category": "发货",
+    "question": "发货后多久能送到？",
+    "answer": "省内通常 1-2 天，省外 3-5 天，偏远地区可能延长至 7 天。"
+  },
+  {
+    "category": "发货",
+    "question": "可以指定快递公司吗？",
+    "answer": "目前合作快递为星云速递和锐风物流，暂不支持指定，如有特殊需求可联系客服备注。"
+  },
+  {
+    "category": "运费",
+    "question": "运费怎么算？",
+    "answer": "订单满 99 元包邮，不足 99 元按地区收取 8-15 元运费。"
+  },
+  {
+    "category": "运费",
+    "question": "偏远地区包邮吗？",
+    "answer": "新疆、西藏、内蒙古等偏远地区不参与包邮，需额外加收运费，具体以结算页面为准。"
+  },
+  {
+    "category": "退换货",
+    "question": "支持七天无理由退货吗？",
+    "answer": "支持。自签收之日起 7 天内，商品完好、配件齐全且不影响二次销售，可申请无理由退货。"
+  },
+  {
+    "category": "退换货",
+    "question": "退货的运费谁承担？",
+    "answer": "质量问题由我方承担运费；无理由退货需由您自行承担寄回运费。"
+  },
+  {
+    "category": "退换货",
+    "question": "换货需要多长时间？",
+    "answer": "收到退回商品后，一般 2-3 个工作日完成换货发出。"
+  },
+  {
+    "category": "保修",
+    "question": "保修期是多久？",
+    "answer": "所有电子产品享受一年整机保修，电池等易耗品保修半年。"
+  },
+  {
+    "category": "保修",
+    "question": "保修需要提供什么凭证？",
+    "answer": "提供订单号或产品序列号（SN码）即可，无需发票。"
+  },
+  {
+    "category": "保修",
+    "question": "人为损坏可以保修吗？",
+    "answer": "人为损坏（如进水、摔裂）不在保修范围内，可付费维修。"
+  },
+  {
+    "category": "发票",
+    "question": "可以开电子发票吗？",
+    "answer": "支持开具电子发票，下单时填写抬头和税号，签收后 7 个工作日内发送至您的邮箱。"
+  },
+  {
+    "category": "发票",
+    "question": "发票可以改抬头吗？",
+    "answer": "订单未发货前可联系客服修改，已发货或已开票后不支持修改。"
+  },
+  {
+    "category": "产品",
+    "question": "笔记本电脑预装什么操作系统？",
+    "answer": "所有 Apex 和 Orion 笔记本预装 FusionOS 5（或专业版），首次开机按引导激活即可。"
+  },
+  {
+    "category": "产品",
+    "question": "手机支持双卡双待吗？",
+    "answer": "除 Nova Mini SE 和 Zenith Classic R 外，其余型号均支持双卡双待（nano SIM）。"
+  },
+  {
+    "category": "产品",
+    "question": "平板电脑支持手写笔吗？",
+    "answer": "Apex Pad Pro、Orion Tab S 和 Nova Tab Max 支持主动式电容笔，需单独购买。"
+  },
+  {
+    "category": "产品",
+    "question": "显示器附赠连接线吗？",
+    "answer": "随箱标配 HDMI 线或 DP 线（视型号而定），部分便携显示器附赠 USB-C 线。"
+  },
+  {
+    "category": "产品",
+    "question": "机械键盘是什么轴体？",
+    "answer": "Apex Mech TKL 提供青轴/红轴可选，Zenith Classic RGB 支持热插拔，可自行更换轴体。"
+  },
+  {
+    "category": "产品",
+    "question": "无线鼠标电池续航多久？",
+    "answer": "Orion Silent Click 约 6 个月（5号电池），Apex Gaming Pro 约 70 小时（Type-C充电）。"
+  },
+  {
+    "category": "产品",
+    "question": "耳机支持降噪吗？",
+    "answer": "Apex Noise Pro 头戴式支持主动降噪；TWS 系列不主动降噪，但入耳式有一定物理隔音效果。"
+  },
+  {
+    "category": "产品",
+    "question": "路由器支持 WiFi 6 吗？",
+    "answer": "Apex Mesh Wi-Fi 6 和 Orion Gaming Router 均支持 WiFi 6，Vortex Mini Travel 为 WiFi 5。"
+  },
+  {
+    "category": "售后",
+    "question": "客服工作时间是什么时候？",
+    "answer": "在线客服 9:00 - 22:00（全年无休），电话客服 9:00 - 18:00（工作日）。"
+  },
+  {
+    "category": "售后",
+    "question": "怎么联系客服？",
+    "answer": "可通过网站右下角在线聊天、客服邮箱 support@apex-store.com 或拨打 400-888-1234。"
+  },
+  {
+    "category": "售后",
+    "question": "商品有质量问题怎么办？",
+    "answer": "请在签收 48 小时内拍摄问题部位照片或视频，联系客服，我们会协助您退换或维修。"
+  },
+  {
+    "category": "订单",
+    "question": "下单后可以取消吗？",
+    "answer": "未发货的订单可自行在订单页面取消；已发货的需拒收或收到后申请退货。"
+  },
+  {
+    "category": "订单",
+    "question": "怎么查询订单状态？",
+    "answer": "登录账号后在「我的订单」中查看，或通过订单号在网站首页查询。"
+  },
+  {
+    "category": "优惠",
+    "question": "有学生优惠吗？",
+    "answer": "凭有效学生证认证后，部分机型享受 5% 折扣，具体可在产品页查看“学生价”标识。"
+  },
+  {
+    "category": "优惠",
+    "question": "优惠券可以叠加吗？",
+    "answer": "每笔订单只能使用一张优惠券，不可叠加，但可与满减活动同享。"
+  }
+]
