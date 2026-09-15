@@ -51,3 +51,9 @@ class SearchFaqArgs(BaseModel):
     category: Optional[FaqCategory] = Field(
         None, description="FAQ 类别（只能取枚举值之一）"
     )
+
+
+class GetProductDetailArgs(BaseModel):
+    product_id: str = Field(
+        ..., pattern=r"^[A-Z]{2,4}\d{3}$", description="商品ID，例如：NB002"
+    )

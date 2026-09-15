@@ -8,18 +8,26 @@ contract/tool.py
 - validate_args()：对 LLM 返回的参数做校验（失败抛 ValidationError）
 """
 
-from providers.tools.product_search import search_products
+from providers.tools.product_search import search_products, get_product_detail
 from providers.tools.inventory import check_inventory
 from providers.tools.faq_search import search_faq
-from contract.tool_args import SearchProductsArgs, CheckInventoryArgs, SearchFaqArgs
+from contract.tool_args import (
+    SearchProductsArgs, CheckInventoryArgs, SearchFaqArgs, GetProductDetailArgs,
+)
 
 
 TOOL_REGISTRY = [
     {
         "name": "search_products",
-        "description": "搜索商品。按类别、预算、品牌或关键词筛选商品列表。",
+        "description": "搜索商品。按类别、预算、品牌或关键词筛选商品列表，返回精简信息（名称/品牌/价格/类别/简介）。",
         "args_model": SearchProductsArgs,
         "fn": search_products,
+    },
+    {
+        "name": "get_product_detail",
+        "description": "查询单个商品的完整硬件参数（CPU/内存/存储/屏幕/重量/电池/系统等）。当用户询问某款商品的具体配置/参数时调用。",
+        "args_model": GetProductDetailArgs,
+        "fn": get_product_detail,
     },
     {
         "name": "check_inventory",

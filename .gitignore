@@ -12,6 +12,9 @@ __pycache__/
 # 文档（本地保留，不纳入版本管理）
 docs/
 
+# 评测报告（每次运行生成）
+eval/report.md
+
 # 编辑器 / 系统
 .idea/
 .vscode/

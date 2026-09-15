@@ -10,6 +10,10 @@
 - **pydantic 驱动工具契约**：用 pydantic 模型定义工具入参，`model_json_schema()` 自动生成 Function Schema，并用同一份模型做参数校验（枚举 / 范围 / 正则 / 长度），单一真相来源。
 - **端口-适配器解耦**：抽象 `ToolProvider` 端口 + 本地适配器，核心依赖注入；LLM 层统一 OpenAI 兼容封装，可在不同模型服务间无缝切换。
 - **健壮性**：工具幻觉名 / 参数非法 / 执行异常统一降级为可读错误回填，由模型自我纠正；记忆更新 / 落盘失败不影响用户回复。
+- **商品详情工具**：搜索返回精简信息，`get_product_detail` 按需拉取单个商品的完整硬件参数（CPU / 内存 / 存储 / 屏幕…），兼顾 token 与信息完整。
+- **可观测性**：记录每次 LLM 调用的 token（含缓存命中）与耗时；每轮返回 `TurnResult`，CLI / Web 实时展示本轮成本与延迟。
+- **评测体系**：`eval/` 提供黄金用例 + 规则断言 + LLM-judge 双通道，一键输出各能力域通过率与成本报告。
+- **Web 调试台**：FastAPI + 单页聊天界面，可视化对话、用户画像与本轮用量。
 
 ## 🏗 架构
 
@@ -35,6 +39,7 @@ agent/                 内部 agent 系统
     loop.py                EcommerceAgent 主循环
     reflection.py          Reflection 自检
     compress.py            工具结果压缩
+    types.py               TurnResult（回复 + 工具轨迹 + 用量）
   memory/                记忆
     history.py             短期对话窗口
     state.py               长期事实条目库
@@ -47,15 +52,23 @@ contract/              工具契约（数据侧）
 providers/             工具契约（执行侧）
   base.py                  ToolProvider 端口（Protocol）
   local.py                 LocalToolProvider 适配器
-  tools/                   本地工具实现（商品搜索 / 库存 / FAQ）
+  tools/                   本地工具实现（商品搜索 / 商品详情 / 库存 / FAQ）
 domain/                领域模型 + 数据源
   models/                  Product / Inventory / Faq
   loader.py                JSON 加载
   data/                    静态数据（*.json）
 llm/                   模型层
-  client.py                OpenAI 兼容客户端
+  client.py                OpenAI 兼容客户端（含用量 / 耗时埋点）
   prompt.py                基座 Prompt
   reflection_prompt.py     自检 Prompt
+web/                   Web 调试台
+  server.py                FastAPI：/chat、/reset
+  index.html               单页聊天界面
+eval/                  评测体系
+  cases.py                 黄金用例
+  checker.py               规则断言
+  judge.py                 LLM-judge
+  runner.py                一键跑 → report.md
 main.py                CLI 入口
 ```
 
@@ -78,9 +91,20 @@ DEEPSEEK_API_KEY=你的密钥
 # LLM_MODEL=deepseek-v4-flash
 ```
 
-### 运行
+### 运行（CLI）
 ```bash
 python main.py
+```
+
+### 运行（Web 调试台）
+```bash
+python -m uvicorn web.server:app --port 8000
+# 浏览器打开 http://127.0.0.1:8000
+```
+
+### 运行（评测）
+```bash
+python -m eval.runner    # 输出各能力域通过率 + 成本，写入 eval/report.md
 ```
 
 ## 🧩 设计要点
@@ -90,13 +114,25 @@ python main.py
 - **单一真相来源**：工具 schema 与参数校验同源于一份 pydantic 模型，改一处两边同步。
 - **可插拔**：RAG / MCP 等都可挂在工具契约两侧，核心无需改动。
 
+## 📊 可观测性与评测
+
+- **成本 / 时延**：每次 LLM 调用的 token（含缓存命中）与耗时被记录；`TurnResult.usage` 给出本轮聚合（主循环 + 自检 + 记忆），CLI / Web 直接展示。
+- **准确度**：`eval/` 以「规则断言 + LLM-judge」双通道评测，按能力域（工具路由 / 售后问答 / 多轮记忆 / 越界拒绝 / 防幻觉）输出通过率与成本报告。
+
+```bash
+python -m eval.runner
+```
+
+> 示例（8 用例）：工具路由 3/3 · 售后 2/2 · 多轮记忆 0/1 · 越界 1/1 · 防幻觉 1/1 → **合计 7/8**，38 次调用 / 42k tokens / 58s。
+
 ## 🗺 路线图
 
 - [ ] SKILL 技能系统（按需加载指令胶囊）
 - [ ] 多 Agent 编排（Supervisor 路由）
 - [ ] MCP 工具接入
 - [ ] RAG 语义检索
-- [ ] 评测体系 / 服务化
+- [x] 评测体系（规则 + LLM-judge 双通道）
+- [x] 服务化（Web 调试台 + 用量可观测）
 
 ## ⚠️ 说明
 

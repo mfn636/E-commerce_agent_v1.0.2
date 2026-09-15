@@ -50,8 +50,8 @@ def index():
 @app.post("/chat")
 def chat(req: ChatRequest):
     agent = _get_agent(req.session_id)
-    replies = agent.run(req.message)          # 可能是多条（中间话术 + 最终回复）
-    return {"replies": replies, "state": agent.state.text}
+    result = agent.run(req.message)          # TurnResult：replies + tool_calls + usage
+    return {"replies": result.replies, "state": agent.state.text, "usage": result.usage}
 
 
 @app.post("/reset")

@@ -12,6 +12,10 @@ _TOOL_CONFIG = {
     "search_products": {
         "fields": ["id", "name", "brand", "price", "category", "description"],
     },
+    "get_product_detail": {
+        "fields": ["id", "name", "brand", "category", "price", "cpu", "memory",
+                   "storage", "display", "weight", "battery", "os", "description"],
+    },
     "check_inventory": {
         "fields": ["product_id", "product_name", "stock", "in_stock"],
     },

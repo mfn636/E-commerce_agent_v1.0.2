@@ -6,6 +6,8 @@ from domain.loader import load_products
 
 # Agent启动时加载一次商品数据
 PRODUCTS: List[Product] = load_products()
+# ID -> Product 映射（供详情查询）
+PRODUCT_MAP = {p.id: p for p in PRODUCTS}
 
 
 def search_products(
@@ -68,3 +70,17 @@ def search_products(
 
 
     return results
+
+
+def get_product_detail(product_id: Optional[str] = None) -> List[Product]:
+    """
+    商品详情工具：按商品 ID 查询单个商品的完整信息（含 CPU/内存/存储/屏幕/重量/电池/系统 等硬件参数）。
+
+    Args:
+        product_id: 商品 ID，例如 NB002
+
+    Returns:
+        List[Product]（命中返回 1 条，未命中返回空列表）
+    """
+    product = PRODUCT_MAP.get(product_id) if product_id else None
+    return [product] if product else []

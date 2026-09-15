@@ -3,6 +3,8 @@
 '''
 
 import os
+import time
+
 from dotenv import load_dotenv
 from openai import OpenAI
 
@@ -10,6 +12,22 @@ load_dotenv()
 
 # 默认模型；可用环境变量 LLM_MODEL 覆盖
 DEFAULT_MODEL = "deepseek-v4-flash"
+
+
+def _cached_tokens(usage):
+    """
+    兼容不同厂商的"缓存命中 token"字段：
+    - DeepSeek: usage.prompt_cache_hit_tokens
+    - OpenAI / 智谱: usage.prompt_tokens_details.cached_tokens
+    """
+    if usage is None:
+        return 0
+    v = getattr(usage, "prompt_cache_hit_tokens", None)
+    if v is not None:
+        return int(v)
+    details = getattr(usage, "prompt_tokens_details", None)
+    v = getattr(details, "cached_tokens", None) if details is not None else None
+    return int(v) if v is not None else 0
 
 
 class LLMClient:
@@ -24,6 +42,8 @@ class LLMClient:
             api_key=api_key,
             base_url="https://api.deepseek.com/v1"
         )
+        # 每次调用的用量/耗时日志（供指标统计，不影响返回）
+        self.usage_log = []
 
     def chat(
         self,
@@ -55,9 +75,21 @@ class LLMClient:
         if response_format:
             params["response_format"] = response_format
 
+        t0 = time.perf_counter()
         response = self.client.chat.completions.create(**params)
+        latency_ms = (time.perf_counter() - t0) * 1000
 
         if stream:
             return response
+
+        usage = getattr(response, "usage", None)
+        self.usage_log.append({
+            "model": self.model,
+            "prompt_tokens": int(getattr(usage, "prompt_tokens", 0) or 0),
+            "completion_tokens": int(getattr(usage, "completion_tokens", 0) or 0),
+            "total_tokens": int(getattr(usage, "total_tokens", 0) or 0),
+            "cached_tokens": _cached_tokens(usage),
+            "latency_ms": round(latency_ms, 1),
+        })
 
         return response.choices[0].message

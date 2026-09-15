@@ -11,6 +11,7 @@ from agent.memory.persist import save_snapshot, load_snapshot
 
 from agent.core.reflection import Reflector, make_default_verdict
 from agent.core.compress import compress_tool_result
+from agent.core.types import TurnResult
 
 
 class EcommerceAgent:
@@ -66,6 +67,8 @@ class EcommerceAgent:
         # 本轮对用户可见的回复（可能多条：中间话术 + 最终回复）
         visible = []
         tool_events = []
+        # 本轮用量的起点（聚合主循环 + 自检 + 记忆的所有 LLM 调用）
+        usage_mark = len(getattr(self.llm, "usage_log", []))
         # 最大轮次防护
         turn = 0
         # 每轮跑的逻辑流程
@@ -129,7 +132,7 @@ class EcommerceAgent:
                 # 更新state
                 self._update_state(reply, user_input, tool_events)
                 visible.append(reply)
-                return visible
+                return self._make_result(visible, tool_events, usage_mark)
             else:
                 # 终止条件②：模型未调工具也未输出内容，不再循环
                 break
@@ -143,7 +146,7 @@ class EcommerceAgent:
         self._update_state(reply, user_input, tool_events)
         visible.append(reply)
 
-        return visible
+        return self._make_result(visible, tool_events, usage_mark)
 
     # ---------- ReAct 具名状态方法 ----------
 
@@ -206,6 +209,32 @@ class EcommerceAgent:
             },
             "result": result_json,
         }
+
+    # ---------- 指标 ----------
+
+    def _collect_usage(self, mark):
+        """聚合本轮（主循环 + 自检 + 记忆）所有 LLM 调用的用量/耗时。"""
+        entries = getattr(self.llm, "usage_log", [])[mark:]
+        return {
+            "llm_calls": len(entries),
+            "prompt_tokens": sum(e["prompt_tokens"] for e in entries),
+            "completion_tokens": sum(e["completion_tokens"] for e in entries),
+            "total_tokens": sum(e["total_tokens"] for e in entries),
+            "cached_tokens": sum(e["cached_tokens"] for e in entries),
+            "latency_ms": round(sum(e["latency_ms"] for e in entries), 1),
+        }
+
+    def _make_result(self, visible, tool_events, usage_mark):
+        """组装 TurnResult：可见回复 + 工具轨迹 + 用量。"""
+        tool_calls = [
+            {"name": e["intent"]["tool"], "args": e["intent"]["args"]}
+            for e in tool_events
+        ]
+        return TurnResult(
+            replies=list(visible),
+            tool_calls=tool_calls,
+            usage=self._collect_usage(usage_mark),
+        )
 
     # ---------- 记忆 / 会话 ----------
 

@@ -64,6 +64,10 @@
     background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px;
     white-space: pre-wrap; font-size: 14px; min-height: 60px; color: #1f2430;
   }
+  .usage {
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 10px 12px;
+    font-size: 13px; color: #4b5563; line-height: 1.8; white-space: pre-wrap;
+  }
   aside .sess { display: flex; gap: 8px; margin-top: 6px; }
   aside .sess input {
     flex: 1; padding: 8px 10px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px;
@@ -85,6 +89,8 @@
     <aside>
       <h3>用户画像 (State)</h3>
       <pre id="state">（暂无）</pre>
+      <h3 style="margin-top:22px">本轮用量</h3>
+      <div id="usage" class="usage">—</div>
       <h3 style="margin-top:22px">会话</h3>
       <div class="sess">
         <input id="session" value="web" />
@@ -104,6 +110,7 @@ const messagesEl = document.getElementById('messages');
 const inputEl = document.getElementById('input');
 const sendBtn = document.getElementById('send');
 const stateEl = document.getElementById('state');
+const usageEl = document.getElementById('usage');
 const sessionEl = document.getElementById('session');
 
 function addBubble(role, text, thinking = false) {
@@ -152,6 +159,12 @@ async function send(text) {
     for (const r of replies) addBubble('ai', r);
 
     stateEl.textContent = (data.state && data.state.trim()) || '（暂无）';
+    if (data.usage) {
+      const u = data.usage;
+      usageEl.textContent =
+        u.llm_calls + ' 次调用 · 输入 ' + u.prompt_tokens + ' / 输出 ' + u.completion_tokens +
+        ' tokens（缓存命中 ' + u.cached_tokens + '）\n耗时 ' + (u.latency_ms / 1000).toFixed(1) + 's';
+    }
   } catch (e) {
     thinking.textContent = '请求失败：' + e.message;
     thinking.classList.remove('thinking');
@@ -175,6 +188,7 @@ document.getElementById('reset').addEventListener('click', async () => {
   });
   messagesEl.innerHTML = '';
   stateEl.textContent = '（暂无）';
+  usageEl.textContent = '—';
   addBubble('ai', '会话「' + sid + '」已重置。');
 });
 
