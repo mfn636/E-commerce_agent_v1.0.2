@@ -1,6 +1,6 @@
 # 电商智能客服 Agent
 
-> 一个**不依赖 LangChain 等框架**、从零手写核心循环的电商客服 Agent。支持多轮对话、工具调用、回复自检与长期记忆。
+> 一个**不依赖 LangChain 等框架**、从零手写核心循环的电商客服 Agent。支持多轮对话、工具调用、回复自检、长期记忆与 RAG 知识检索。
 
 ## ✨ 特性
 
@@ -11,8 +11,9 @@
 - **端口-适配器解耦**：抽象 `ToolProvider` 端口 + 本地适配器，核心依赖注入；LLM 层统一 OpenAI 兼容封装，可在不同模型服务间无缝切换。
 - **健壮性**：工具幻觉名 / 参数非法 / 执行异常统一降级为可读错误回填，由模型自我纠正；记忆更新 / 落盘失败不影响用户回复。
 - **商品详情工具**：搜索返回精简信息，`get_product_detail` 按需拉取单个商品的完整硬件参数（CPU / 内存 / 存储 / 屏幕…），兼顾 token 与信息完整。
+- **RAG 知识检索**：文档分块 → bge-m3 嵌入 → Qdrant 向量库 → 语义检索（相似度阈值 + 元数据过滤）；新增 `search_knowledge` 工具，FAQ / 商品工具升级为语义检索（保留关键词兜底）。
 - **可观测性**：记录每次 LLM 调用的 token（含缓存命中）与耗时；每轮返回 `TurnResult`，CLI / Web 实时展示本轮成本与延迟。
-- **评测体系**：`eval/` 提供黄金用例 + 规则断言 + LLM-judge 双通道，一键输出各能力域通过率与成本报告。
+- **评测体系**：`eval/` 提供黄金用例 + 规则断言 + LLM-judge 双通道（端到端），以及检索 hit rate / recall@k（RAG）——一键输出报告。
 - **Web 调试台**：FastAPI + 单页聊天界面，可视化对话、用户画像与本轮用量。
 
 ## 🏗 架构
@@ -29,6 +30,8 @@
         ▼                     ▼                      ▼               ▼
    providers/            contract/               domain/          llm/
    工具执行侧            工具契约（数据侧）        领域模型 + 数据    模型客户端
+        │
+        └──► rag/  向量检索（挂在工具契约后侧：分块 / 嵌入 / 向量库 / 检索）
 ```
 
 ## 📁 目录结构
@@ -52,23 +55,29 @@ contract/              工具契约（数据侧）
 providers/             工具契约（执行侧）
   base.py                  ToolProvider 端口（Protocol）
   local.py                 LocalToolProvider 适配器
-  tools/                   本地工具实现（商品搜索 / 商品详情 / 库存 / FAQ）
+  tools/                   本地工具实现（商品搜索 / 详情 / 库存 / FAQ / 知识检索）
 domain/                领域模型 + 数据源
-  models/                  Product / Inventory / Faq
+  models/                  Product / Inventory / Faq / Knowledge
   loader.py                JSON 加载
-  data/                    静态数据（*.json）
+  data/                    静态数据（*.json，含 guides）
+rag/                   RAG 检索（挂在工具契约后侧）
+  chunker.py               文档 → 带元数据的 chunk
+  embedder.py              Ollama bge-m3 嵌入
+  store.py                 Qdrant 本地向量库（幂等 upsert）
+  ingest.py                JSON → 向量库（数据管道，可重复跑）
+  retriever.py             query → top-k + 阈值 + 元数据过滤
 llm/                   模型层
-  client.py                OpenAI 兼容客户端（含用量 / 耗时埋点）
+  client.py                OpenAI 兼容客户端（用量/耗时埋点 + 思考开关）
   prompt.py                基座 Prompt
   reflection_prompt.py     自检 Prompt
 web/                   Web 调试台
   server.py                FastAPI：/chat、/reset
   index.html               单页聊天界面
 eval/                  评测体系
-  cases.py                 黄金用例
-  checker.py               规则断言
-  judge.py                 LLM-judge
-  runner.py                一键跑 → report.md
+  cases.py / checker.py / judge.py / runner.py    端到端「规则 + LLM-judge」双通道
+  retrieval_runner.py      检索 hit rate / recall@k
+scripts/               数据生成
+  gen_corpus.py            用 LLM 生成 guides / FAQ / 商品描述 / 检索黄金集
 main.py                CLI 入口
 ```
 
@@ -77,6 +86,7 @@ main.py                CLI 入口
 ### 环境
 - Python 3.10+
 - 一个 OpenAI 兼容的大模型 API（默认对接 DeepSeek）
+- RAG 检索需本地 [Ollama](https://ollama.com/) + `bge-m3` 嵌入模型
 
 ### 安装
 ```bash
@@ -89,6 +99,12 @@ pip install -r requirements.txt
 DEEPSEEK_API_KEY=你的密钥
 # 可选：覆盖默认模型
 # LLM_MODEL=deepseek-v4-flash
+```
+
+### 初始化 RAG 向量库（首次 / 数据更新后）
+```bash
+ollama pull bge-m3        # 拉取嵌入模型（约 1.2GB）
+python -m rag.ingest      # JSON → 向量库（幂等，可重复跑）
 ```
 
 ### 运行（CLI）
@@ -104,7 +120,8 @@ python -m uvicorn web.server:app --port 8000
 
 ### 运行（评测）
 ```bash
-python -m eval.runner    # 输出各能力域通过率 + 成本，写入 eval/report.md
+python -m eval.runner              # 端到端：各能力域通过率 + 成本
+python -m eval.retrieval_runner    # 检索：hit rate / recall@k
 ```
 
 ## 🧩 设计要点
@@ -117,23 +134,26 @@ python -m eval.runner    # 输出各能力域通过率 + 成本，写入 eval/re
 ## 📊 可观测性与评测
 
 - **成本 / 时延**：每次 LLM 调用的 token（含缓存命中）与耗时被记录；`TurnResult.usage` 给出本轮聚合（主循环 + 自检 + 记忆），CLI / Web 直接展示。
-- **准确度**：`eval/` 以「规则断言 + LLM-judge」双通道评测，按能力域（工具路由 / 售后问答 / 多轮记忆 / 越界拒绝 / 防幻觉）输出通过率与成本报告。
+- **端到端准确度**：`eval/` 以「规则断言 + LLM-judge」双通道，按能力域（工具路由 / 售后问答 / 多轮记忆 / 越界拒绝 / 防幻觉）输出通过率与成本。
+- **检索质量（RAG）**：`eval/retrieval_runner.py` 用黄金查询集评测 hit rate / recall@k。
 
 ```bash
-python -m eval.runner
+python -m eval.runner              # 端到端
+python -m eval.retrieval_runner    # 检索
 ```
 
-> 示例（8 用例）：工具路由 3/3 · 售后 2/2 · 多轮记忆 0/1 · 越界 1/1 · 防幻觉 1/1 → **合计 7/8**，38 次调用 / 42k tokens / 58s。
+> 示例：端到端 8 用例合计 **7/8**（38 次调用 / 42k tokens / 58s）；检索 110 条黄金查询 **hit@1 83.6% · hit@3 94.5% · hit@5 97.3%**。
 
 ## 🗺 路线图
 
+- [x] RAG 语义检索（分块 → bge-m3 嵌入 → Qdrant → 检索）
+- [x] 评测体系（端到端双通道 + 检索 hit rate / recall@k）
+- [x] 服务化（Web 调试台 + 用量可观测）
+- [ ] 混合检索 / reranker
 - [ ] SKILL 技能系统（按需加载指令胶囊）
 - [ ] 多 Agent 编排（Supervisor 路由）
 - [ ] MCP 工具接入
-- [ ] RAG 语义检索
-- [x] 评测体系（规则 + LLM-judge 双通道）
-- [x] 服务化（Web 调试台 + 用量可观测）
 
 ## ⚠️ 说明
 
-本项目为个人学习与实践项目，数据为虚构的静态示例数据，不涉及任何真实业务，持续更新进度。
+本项目为个人学习与实践项目，数据为虚构的示例数据（AI 生成），不涉及任何真实业务，持续更新进度。

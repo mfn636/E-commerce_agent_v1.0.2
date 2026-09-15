@@ -57,3 +57,9 @@ class GetProductDetailArgs(BaseModel):
     product_id: str = Field(
         ..., pattern=r"^[A-Z]{2,4}\d{3}$", description="商品ID，例如：NB002"
     )
+
+
+class SearchKnowledgeArgs(BaseModel):
+    query: str = Field(..., min_length=1, description="用户问题（自然语言），用于知识库语义检索")
+    category: Optional[str] = Field(None, description="可选，按知识类别过滤（如 退换货、支付）")
+    top_k: Optional[int] = Field(None, ge=1, le=10, description="返回条数上限，默认 5")

@@ -11,8 +11,10 @@ contract/tool.py
 from providers.tools.product_search import search_products, get_product_detail
 from providers.tools.inventory import check_inventory
 from providers.tools.faq_search import search_faq
+from providers.tools.knowledge_search import search_knowledge
 from contract.tool_args import (
     SearchProductsArgs, CheckInventoryArgs, SearchFaqArgs, GetProductDetailArgs,
+    SearchKnowledgeArgs,
 )
 
 
@@ -40,6 +42,12 @@ TOOL_REGISTRY = [
         "description": "搜索常见问题FAQ，用于回答支付、发货、运费、退换货、保修、发票、订单、产品、售后、优惠等售后问题。",
         "args_model": SearchFaqArgs,
         "fn": search_faq,
+    },
+    {
+        "name": "search_knowledge",
+        "description": "检索知识库（售后政策、选购指南、帮助文档等长文），用于回答规则、政策、流程、选购建议类问题；返回带来源的相关片段。",
+        "args_model": SearchKnowledgeArgs,
+        "fn": search_knowledge,
     },
 ]
 

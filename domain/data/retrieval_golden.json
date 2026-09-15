@@ -1,0 +1,662 @@
+[
+  {
+    "query": "你们支持哪些付款方式？",
+    "expected_ids": [
+      "faq-0"
+    ]
+  },
+  {
+    "query": "可以用支付宝或者微信支付吗？",
+    "expected_ids": [
+      "faq-0"
+    ]
+  },
+  {
+    "query": "买东西可以分期付款吗？",
+    "expected_ids": [
+      "faq-1"
+    ]
+  },
+  {
+    "query": "花呗能不能分期免息？",
+    "expected_ids": [
+      "faq-1"
+    ]
+  },
+  {
+    "query": "下单后多久发货？",
+    "expected_ids": [
+      "faq-2"
+    ]
+  },
+  {
+    "query": "一般几天能发出？",
+    "expected_ids": [
+      "faq-2"
+    ]
+  },
+  {
+    "query": "发货后多久能收到货？",
+    "expected_ids": [
+      "faq-3"
+    ]
+  },
+  {
+    "query": "快递大概几天能送到？",
+    "expected_ids": [
+      "faq-3"
+    ]
+  },
+  {
+    "query": "可以自己选快递公司吗？",
+    "expected_ids": [
+      "faq-4"
+    ]
+  },
+  {
+    "query": "能不能指定用某家快递发货？",
+    "expected_ids": [
+      "faq-4"
+    ]
+  },
+  {
+    "query": "运费怎么算？",
+    "expected_ids": [
+      "faq-5"
+    ]
+  },
+  {
+    "query": "多少钱可以包邮？",
+    "expected_ids": [
+      "faq-5"
+    ]
+  },
+  {
+    "query": "新疆西藏这些偏远地区包邮吗？",
+    "expected_ids": [
+      "faq-6"
+    ]
+  },
+  {
+    "query": "偏远地区需要另加运费吗？",
+    "expected_ids": [
+      "faq-6"
+    ]
+  },
+  {
+    "query": "支持七天无理由退货吗？",
+    "expected_ids": [
+      "faq-7"
+    ]
+  },
+  {
+    "query": "收到货后不满意能退吗？",
+    "expected_ids": [
+      "faq-7"
+    ]
+  },
+  {
+    "query": "退货的运费谁出？",
+    "expected_ids": [
+      "faq-8"
+    ]
+  },
+  {
+    "query": "无理由退货寄回运费怎么算？",
+    "expected_ids": [
+      "faq-8"
+    ]
+  },
+  {
+    "query": "换货一般要多久？",
+    "expected_ids": [
+      "faq-9"
+    ]
+  },
+  {
+    "query": "寄回换货后几天能发出来？",
+    "expected_ids": [
+      "faq-9"
+    ]
+  },
+  {
+    "query": "电子产品保修期是多长时间？",
+    "expected_ids": [
+      "faq-10"
+    ]
+  },
+  {
+    "query": "电池的保修期和整机一样吗？",
+    "expected_ids": [
+      "faq-10"
+    ]
+  },
+  {
+    "query": "保修需要发票吗？",
+    "expected_ids": [
+      "faq-11"
+    ]
+  },
+  {
+    "query": "申请保修要提供哪些凭证？",
+    "expected_ids": [
+      "faq-11"
+    ]
+  },
+  {
+    "query": "进水摔坏的手机能保修吗？",
+    "expected_ids": [
+      "faq-12"
+    ]
+  },
+  {
+    "query": "人为损坏可以免费维修吗？",
+    "expected_ids": [
+      "faq-12"
+    ]
+  },
+  {
+    "query": "怎么开电子发票？",
+    "expected_ids": [
+      "faq-13"
+    ]
+  },
+  {
+    "query": "下单后多久能收到电子发票？",
+    "expected_ids": [
+      "faq-13"
+    ]
+  },
+  {
+    "query": "发票抬头可以修改吗？",
+    "expected_ids": [
+      "faq-14"
+    ]
+  },
+  {
+    "query": "已经发货了还能改发票抬头吗？",
+    "expected_ids": [
+      "faq-14"
+    ]
+  },
+  {
+    "query": "Apex笔记本预装什么系统？",
+    "expected_ids": [
+      "faq-15"
+    ]
+  },
+  {
+    "query": "Orion笔记本自带什么操作系统？",
+    "expected_ids": [
+      "faq-15"
+    ]
+  },
+  {
+    "query": "哪些手机不支持双卡双待？",
+    "expected_ids": [
+      "faq-16"
+    ]
+  },
+  {
+    "query": "Nova Mini SE支持双卡吗？",
+    "expected_ids": [
+      "faq-16"
+    ]
+  },
+  {
+    "query": "哪些平板支持手写笔？",
+    "expected_ids": [
+      "faq-17"
+    ]
+  },
+  {
+    "query": "平板的手写笔是标配还是需要单独买？",
+    "expected_ids": [
+      "faq-17"
+    ]
+  },
+  {
+    "query": "买显示器会送连接线吗？",
+    "expected_ids": [
+      "faq-18"
+    ]
+  },
+  {
+    "query": "便携显示器附赠什么线？",
+    "expected_ids": [
+      "faq-18"
+    ]
+  },
+  {
+    "query": "Apex Mech TKL有哪些轴体可选？",
+    "expected_ids": [
+      "faq-19"
+    ]
+  },
+  {
+    "query": "Zenith Classic RGB支持自己换轴吗？",
+    "expected_ids": [
+      "faq-19"
+    ]
+  },
+  {
+    "query": "无线鼠标电池能用多久？",
+    "expected_ids": [
+      "faq-20"
+    ]
+  },
+  {
+    "query": "Orion Silent Click 和 Apex Gaming Pro 的续航分别是多少？",
+    "expected_ids": [
+      "faq-20"
+    ]
+  },
+  {
+    "query": "你们的耳机支持主动降噪吗？",
+    "expected_ids": [
+      "faq-21"
+    ]
+  },
+  {
+    "query": "Apex Noise Pro 和 TWS 系列在降噪上有什么区别？",
+    "expected_ids": [
+      "faq-21"
+    ]
+  },
+  {
+    "query": "哪些路由器支持 WiFi 6？",
+    "expected_ids": [
+      "faq-22"
+    ]
+  },
+  {
+    "query": "Vortex Mini Travel 支持 WiFi 6 吗？",
+    "expected_ids": [
+      "faq-22"
+    ]
+  },
+  {
+    "query": "客服几点上班？",
+    "expected_ids": [
+      "faq-23"
+    ]
+  },
+  {
+    "query": "在线客服和电话客服的工作时间分别是什么？",
+    "expected_ids": [
+      "faq-23"
+    ]
+  },
+  {
+    "query": "怎么联系你们的客服？",
+    "expected_ids": [
+      "faq-24"
+    ]
+  },
+  {
+    "query": "客服电话和邮箱是多少？",
+    "expected_ids": [
+      "faq-24"
+    ]
+  },
+  {
+    "query": "笔记本电脑怎么选？预算和配置怎么权衡？",
+    "expected_ids": [
+      "guide-笔记本电脑-1"
+    ]
+  },
+  {
+    "query": "买笔记本应该看哪些方面？",
+    "expected_ids": [
+      "guide-笔记本电脑-1"
+    ]
+  },
+  {
+    "query": "笔记本电脑平时怎么保养？",
+    "expected_ids": [
+      "guide-笔记本电脑-2"
+    ]
+  },
+  {
+    "query": "笔记本使用注意事项有哪些？",
+    "expected_ids": [
+      "guide-笔记本电脑-2"
+    ]
+  },
+  {
+    "query": "手机参数怎么看？怎么避免买手机踩坑？",
+    "expected_ids": [
+      "guide-手机-1"
+    ]
+  },
+  {
+    "query": "买手机主要看哪些配置？",
+    "expected_ids": [
+      "guide-手机-1"
+    ]
+  },
+  {
+    "query": "手机日常怎么保养？",
+    "expected_ids": [
+      "guide-手机-2"
+    ]
+  },
+  {
+    "query": "手机使用和充电有什么注意事项？",
+    "expected_ids": [
+      "guide-手机-2"
+    ]
+  },
+  {
+    "query": "平板电脑怎么选尺寸和用途？",
+    "expected_ids": [
+      "guide-平板电脑-1"
+    ]
+  },
+  {
+    "query": "买平板需要配哪些配件？",
+    "expected_ids": [
+      "guide-平板电脑-1"
+    ]
+  },
+  {
+    "query": "平板电脑日常怎么保养才能用得更久？",
+    "expected_ids": [
+      "guide-平板电脑-2"
+    ]
+  },
+  {
+    "query": "平板电脑使用有哪些注意事项？",
+    "expected_ids": [
+      "guide-平板电脑-2"
+    ]
+  },
+  {
+    "query": "显示器分辨率、刷新率和尺寸应该怎么选？",
+    "expected_ids": [
+      "guide-显示器-1"
+    ]
+  },
+  {
+    "query": "买显示器主要看哪些参数？",
+    "expected_ids": [
+      "guide-显示器-1"
+    ]
+  },
+  {
+    "query": "显示器平时怎么清洁和保养？",
+    "expected_ids": [
+      "guide-显示器-2"
+    ]
+  },
+  {
+    "query": "显示器使用和保养要注意什么？",
+    "expected_ids": [
+      "guide-显示器-2"
+    ]
+  },
+  {
+    "query": "机械键盘和薄膜键盘怎么选？",
+    "expected_ids": [
+      "guide-键盘-1"
+    ]
+  },
+  {
+    "query": "键盘轴体应该怎么挑选？",
+    "expected_ids": [
+      "guide-键盘-1"
+    ]
+  },
+  {
+    "query": "键盘怎么清洁保养才能保持手感？",
+    "expected_ids": [
+      "guide-键盘-2"
+    ]
+  },
+  {
+    "query": "键盘日常使用要注意哪些问题？",
+    "expected_ids": [
+      "guide-键盘-2"
+    ]
+  },
+  {
+    "query": "鼠标有线还是无线好？DPI怎么选？",
+    "expected_ids": [
+      "guide-鼠标-1"
+    ]
+  },
+  {
+    "query": "怎么根据握持手感挑选鼠标？",
+    "expected_ids": [
+      "guide-鼠标-1"
+    ]
+  },
+  {
+    "query": "鼠标怎么使用和保养更耐用？",
+    "expected_ids": [
+      "guide-鼠标-2"
+    ]
+  },
+  {
+    "query": "鼠标日常清洁维护要注意什么？",
+    "expected_ids": [
+      "guide-鼠标-2"
+    ]
+  },
+  {
+    "query": "降噪耳机怎么选？入耳式和头戴式有什么区别？",
+    "expected_ids": [
+      "guide-耳机-1"
+    ]
+  },
+  {
+    "query": "耳机音质好坏怎么判断？",
+    "expected_ids": [
+      "guide-耳机-1"
+    ]
+  },
+  {
+    "query": "耳机平时怎么清洁和存放？",
+    "expected_ids": [
+      "guide-耳机-2"
+    ]
+  },
+  {
+    "query": "耳机使用保养有哪些注意事项？",
+    "expected_ids": [
+      "guide-耳机-2"
+    ]
+  },
+  {
+    "query": "路由器选购看哪些参数？WiFi 6有必要吗？",
+    "expected_ids": [
+      "guide-路由器-1"
+    ]
+  },
+  {
+    "query": "家里户型大怎么选路由器和组网？",
+    "expected_ids": [
+      "guide-路由器-1"
+    ]
+  },
+  {
+    "query": "Apex Book Pro 15 的配置怎么样？",
+    "expected_ids": [
+      "product-NB001"
+    ]
+  },
+  {
+    "query": "适合编程和多任务办公的笔记本电脑推荐",
+    "expected_ids": [
+      "product-NB001"
+    ]
+  },
+  {
+    "query": "Orion Ultra 14 的存储空间有多大？",
+    "expected_ids": [
+      "product-NB002"
+    ]
+  },
+  {
+    "query": "适合学生和行政办公用的笔记本电脑",
+    "expected_ids": [
+      "product-NB002"
+    ]
+  },
+  {
+    "query": "Vortex Blade 16 适合视频剪辑吗？",
+    "expected_ids": [
+      "product-NB003"
+    ]
+  },
+  {
+    "query": "配16核处理器和32GB内存的笔记本电脑有哪些",
+    "expected_ids": [
+      "product-NB003"
+    ]
+  },
+  {
+    "query": "预算有限的入门轻薄本推荐",
+    "expected_ids": [
+      "product-NB004"
+    ]
+  },
+  {
+    "query": "Nova Flex 13 的配置和价格定位",
+    "expected_ids": [
+      "product-NB004"
+    ]
+  },
+  {
+    "query": "适合专业设计和数据分析的笔记本电脑",
+    "expected_ids": [
+      "product-NB005"
+    ]
+  },
+  {
+    "query": "Zenith Studio 17 的内存和存储规格",
+    "expected_ids": [
+      "product-NB005"
+    ]
+  },
+  {
+    "query": "经常出差用的便携笔记本推荐",
+    "expected_ids": [
+      "product-NB006"
+    ]
+  },
+  {
+    "query": "Apex Book Air 13 的性能怎么样",
+    "expected_ids": [
+      "product-NB006"
+    ]
+  },
+  {
+    "query": "适合基础办公和在线学习的15英寸笔记本",
+    "expected_ids": [
+      "product-NB007"
+    ]
+  },
+  {
+    "query": "Orion Core 15 的配置参数",
+    "expected_ids": [
+      "product-NB007"
+    ]
+  },
+  {
+    "query": "程序员和设计师适合用什么笔记本",
+    "expected_ids": [
+      "product-NB008"
+    ]
+  },
+  {
+    "query": "Vortex Alpha 14 的性能与存储怎么样",
+    "expected_ids": [
+      "product-NB008"
+    ]
+  },
+  {
+    "query": "只用来网页浏览和看视频的便宜笔记本",
+    "expected_ids": [
+      "product-NB009"
+    ]
+  },
+  {
+    "query": "Nova Lite 14 的配置和定位",
+    "expected_ids": [
+      "product-NB009"
+    ]
+  },
+  {
+    "query": "需要大容量双存储的笔记本推荐",
+    "expected_ids": [
+      "product-NB010"
+    ]
+  },
+  {
+    "query": "Zenith Fusion 16 的存储配置是什么",
+    "expected_ids": [
+      "product-NB010"
+    ]
+  },
+  {
+    "query": "Apex Nova S 手机的性能参数怎么样？",
+    "expected_ids": [
+      "product-PH001"
+    ]
+  },
+  {
+    "query": "搭载 Zenon X5 处理器和 8GB 内存的手机是哪款？",
+    "expected_ids": [
+      "product-PH001"
+    ]
+  },
+  {
+    "query": "Orion Xtreme Pro 适合玩大型游戏吗？",
+    "expected_ids": [
+      "product-PH002"
+    ]
+  },
+  {
+    "query": "哪款手机有 12GB 内存和 256GB UFS 4.0 存储？",
+    "expected_ids": [
+      "product-PH002"
+    ]
+  },
+  {
+    "query": "Vortex Lite 5G 支持 5G 网络吗？",
+    "expected_ids": [
+      "product-PH003"
+    ]
+  },
+  {
+    "query": "有没有便宜一点的 5G 手机推荐？",
+    "expected_ids": [
+      "product-PH003"
+    ]
+  },
+  {
+    "query": "Nova Cam Pro 的拍照能力怎么样？",
+    "expected_ids": [
+      "product-PH004"
+    ]
+  },
+  {
+    "query": "主打影像且搭载 Zenon X7 处理器的手机是哪款？",
+    "expected_ids": [
+      "product-PH004"
+    ]
+  },
+  {
+    "query": "Zenith Fold X 折叠屏手机的配置如何？",
+    "expected_ids": [
+      "product-PH005"
+    ]
+  },
+  {
+    "query": "有没有 16GB 内存的折叠屏手机？",
+    "expected_ids": [
+      "product-PH005"
+    ]
+  }
+]

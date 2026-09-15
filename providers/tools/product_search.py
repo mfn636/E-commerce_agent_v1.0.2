@@ -1,13 +1,43 @@
-from typing import Optional, List
+"""
+providers/tools/product_search.py
 
-from domain.models.product import Product
+商品检索：语义检索（RAG）+ 结构化过滤（预算/品牌/类别），保留关键词兜底。
+"""
+
+from typing import List, Optional
+
+from qdrant_client.models import FieldCondition, Filter, MatchValue, Range
+
 from domain.loader import load_products
-
+from domain.models.product import Product
+from rag.ingest import COLLECTION_PRODUCTS
+from rag.retriever import Retriever
+from rag.store import get_store
 
 # Agent启动时加载一次商品数据
 PRODUCTS: List[Product] = load_products()
-# ID -> Product 映射（供详情查询）
+# ID -> Product 映射（供详情查询 / 语义结果还原）
 PRODUCT_MAP = {p.id: p for p in PRODUCTS}
+
+_retriever = None
+
+
+def _get_retriever() -> Retriever:
+    global _retriever
+    if _retriever is None:
+        _retriever = Retriever(get_store())
+    return _retriever
+
+
+def _build_filter(category, budget, brand) -> Filter:
+    must = [FieldCondition(key="source", match=MatchValue(value="product"))]
+    if category:
+        must.append(FieldCondition(key="category", match=MatchValue(value=category)))
+    if brand:
+        must.append(FieldCondition(key="brand", match=MatchValue(value=brand)))
+    if budget:
+        must.append(FieldCondition(key="price", range=Range(lte=budget)))
+    return Filter(must=must)
 
 
 def search_products(
@@ -18,69 +48,43 @@ def search_products(
     query: Optional[str] = None,
 ) -> List[Product]:
     """
-    商品查询工具
-
-    Args:
-        category:
-            商品类别，例如：显示器、笔记本电脑
-
-        budget:
-            最高预算
-
-        brand:
-            品牌，例如：联想、戴尔
-
-        keyword:
-            关键词搜索
-
-        query:
-            用户原始搜索描述，当keyword未传时作为关键词使用
-
-    Returns:
-        List[Product]
+    商品搜索：有自由文本时走语义检索（叠加结构化过滤），否则结构化过滤；
+    失败/空则回退关键词。
     """
-
-    results = []
-
-    for product in PRODUCTS:
-        # 类别过滤
-        if category:
-            if category not in product.category:
-                continue
-        # 价格过滤
-        if budget:
-            if product.price > budget:
-                continue
-        # 品牌过滤
-        if brand:
-            if brand.lower() not in product.brand.lower():
-                continue
-        # 关键词过滤
-        keyword = keyword or query
-        if keyword:
-            text = (
-                product.name
-                + product.category
-                + product.description
+    text_query = keyword or query
+    if text_query:
+        try:
+            hits = _get_retriever().retrieve(
+                COLLECTION_PRODUCTS, text_query, top_k=8,
+                score_threshold=0.3, query_filter=_build_filter(category, budget, brand),
             )
+            products = [PRODUCT_MAP[h["payload"]["product_id"]]
+                        for h in hits if h["payload"].get("product_id") in PRODUCT_MAP]
+            if products:
+                return products
+        except Exception:  # noqa: BLE001
+            pass
+    return _keyword(category, budget, brand, keyword or query)
+
+
+def _keyword(category, budget, brand, keyword) -> List[Product]:
+    results = []
+    for product in PRODUCTS:
+        if category and category not in product.category:
+            continue
+        if budget and product.price > budget:
+            continue
+        if brand and brand.lower() not in product.brand.lower():
+            continue
+        if keyword:
+            text = product.name + product.category + product.description
             if keyword.lower() not in text.lower():
                 continue
-
         results.append(product)
-
-
     return results
 
 
 def get_product_detail(product_id: Optional[str] = None) -> List[Product]:
-    """
-    商品详情工具：按商品 ID 查询单个商品的完整信息（含 CPU/内存/存储/屏幕/重量/电池/系统 等硬件参数）。
-
-    Args:
-        product_id: 商品 ID，例如 NB002
-
-    Returns:
-        List[Product]（命中返回 1 条，未命中返回空列表）
-    """
+    """按商品 ID 查询单个商品的完整信息（含硬件参数）。"""
     product = PRODUCT_MAP.get(product_id) if product_id else None
     return [product] if product else []

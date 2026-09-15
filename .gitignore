@@ -14,6 +14,10 @@ docs/
 
 # 评测报告（每次运行生成）
 eval/report.md
+eval/retrieval_report.md
+
+# 向量库本地数据（可由 rag.ingest 重新生成）
+rag/qdrant_data/
 
 # 编辑器 / 系统
 .idea/

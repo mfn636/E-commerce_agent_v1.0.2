@@ -22,6 +22,9 @@ _TOOL_CONFIG = {
     "search_faq": {
         "fields": ["category", "question", "answer"],
     },
+    "search_knowledge": {
+        "fields": ["source", "title", "content", "score"],
+    },
 }
 
 DEFAULT_MAX_ITEMS = 8

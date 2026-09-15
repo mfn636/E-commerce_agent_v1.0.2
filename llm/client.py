@@ -54,6 +54,7 @@ class LLMClient:
         stream=False,       # 是否流式输出
         response_format=None,
         system_prompt=None, # 人设 prompt（可以单独传，也可以塞 messages 里）
+        thinking=None,      # None=厂商默认；False=关闭思考（省 token、提速）；True=开启
     ):
 
         if system_prompt:
@@ -74,6 +75,9 @@ class LLMClient:
 
         if response_format:
             params["response_format"] = response_format
+
+        if thinking is not None:
+            params["extra_body"] = {"thinking": {"type": "enabled" if thinking else "disabled"}}
 
         t0 = time.perf_counter()
         response = self.client.chat.completions.create(**params)
