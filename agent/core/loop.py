@@ -63,6 +63,8 @@ class EcommerceAgent:
             *self.history.get_window(self.WINDOW),
         ]
 
+        # 本轮对用户可见的回复（可能多条：中间话术 + 最终回复）
+        visible = []
         tool_events = []
         # 最大轮次防护
         turn = 0
@@ -78,8 +80,11 @@ class EcommerceAgent:
             print(f"\n[ReAct:Thought] content={getattr(response, 'reasoning_content', '')}")
             # 如果模型调工具
             if response.tool_calls:
-                # 把模型的"工具调用意图"原样回填进 messages
+                # 把模型的"工具调用意图"原样回填（保留 content，不丢 Thought）
                 self._append_tool_calls(messages, response)
+                # 伴随工具调用的 content → 对用户可见的中间话术
+                if response.content and response.content.strip():
+                    visible.append(response.content)
 
                 for tc in response.tool_calls:
                     args = self._parse_arguments(tc.function.arguments)
@@ -111,6 +116,8 @@ class EcommerceAgent:
                         "你的上一条回复未通过自检，缺失信息如下，请据此补调工具后再回答：\n"
                         + "\n".join(f"- {i}" for i in issues)
                     )
+                    # 先把被打回的草稿写回历史（给模型看），再由 user 反馈补充
+                    messages.append({"role": "assistant", "content": draft})
                     messages.append({"role": "user", "content": feedback})
                     print("[Reflection:continue_tool] 带反馈回环")
                     continue
@@ -121,21 +128,27 @@ class EcommerceAgent:
                 self.history.add_assistant(reply)
                 # 更新state
                 self._update_state(reply, user_input, tool_events)
-                return reply
+                visible.append(reply)
+                return visible
             else:
                 # 终止条件②：模型未调工具也未输出内容，不再循环
                 break
 
-        reply = "抱歉，暂时无法处理您的问题，请稍后再试。"
+        # 循环退出：超轮数 → 无工具收尾作答；空响应 → 兜底话术
+        reply = self._finalize_answer(messages) if turn >= self.MAX_TURNS else None
+        if not reply:
+            reply = "抱歉，暂时无法处理您的问题，请稍后再试。"
+        print(f"[Answer] {reply}")
         self.history.add_assistant(reply)
         self._update_state(reply, user_input, tool_events)
+        visible.append(reply)
 
-        return reply
+        return visible
 
     # ---------- ReAct 具名状态方法 ----------
 
     def _append_tool_calls(self, messages, response):
-        """将模型返回的 tool_calls 转成 assistant 消息加入对话。"""
+        """将模型返回的 tool_calls 转成 assistant 消息加入对话（有 content 则一并保留）。"""
         tool_call_dicts = []
         for tc in response.tool_calls:
             tool_call_dicts.append({
@@ -146,7 +159,10 @@ class EcommerceAgent:
                     "arguments": tc.function.arguments
                 }
             })
-        messages.append({"role": "assistant", "tool_calls": tool_call_dicts})
+        msg = {"role": "assistant", "tool_calls": tool_call_dicts}
+        if response.content and response.content.strip():
+            msg["content"] = response.content
+        messages.append(msg)
 
     def _parse_arguments(self, args_str):
         """arguments 是 JSON 字符串：解析兜底，坏 JSON / 非 dict 一律返回 {}。"""
@@ -163,6 +179,14 @@ class EcommerceAgent:
             return compress_tool_result(name, result)
         except Exception as e:
             return json.dumps({"error": f"工具调用失败: {e}"}, ensure_ascii=False)
+
+    def _finalize_answer(self, messages):
+        """超轮数收尾：禁用工具，强制模型基于已有结果作答；失败返回 None 走兜底。"""
+        try:
+            resp = self.llm.chat(messages=messages, tools=None)
+            return (resp.content or "").strip() or None
+        except Exception:
+            return None
 
     def _tool_message(self, tc, result_json):
         """组装 role=tool 消息，tool_call_id 与 assistant 的 tool_calls 一一对应。"""

@@ -9,7 +9,8 @@ def main():
         if user_input == "exit":
             break
         result = agent.run(user_input)
-        print("AI：", result)
+        for line in result:
+            print("AI：", line)
 
 if __name__ == '__main__':
     main()
